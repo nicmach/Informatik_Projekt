@@ -1,7 +1,7 @@
 import socket
 
 target_host = "127.0.0.1" # This is the loopback address of the computer
-target_port = 6666 # Some arbitrary port nubmer
+target_port = 6666 # Some port number
 
 
 # Instead of using SOCK_STREAM as before we now utilise SOCK_DGRAM.
@@ -16,4 +16,5 @@ client.sendto(b"Test Data", (target_host, target_port))
 # Similar to the TCP client we retrieve the data
 data, addr = client.recvfrom(4096)
 
+print(data.decode())
 client.head()
