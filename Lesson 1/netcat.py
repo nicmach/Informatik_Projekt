@@ -1,3 +1,5 @@
+# Importing all necessary libraries
+
 import argparse
 import shlex
 import subprocess
@@ -6,22 +8,41 @@ import textwrap
 import threading
 import socket
 
+
+# Function for executing the command of the script
 def execute(cmd):
+
+    # Strip the input command of all unecessary characters
     cmd = cmd.strip()
 
+    # If there is no command we will return/ exit
     if not cmd:
         return
 
+    # The ouptput will be returned using the subprocess library, which takes the cmd, which is formated
+    # into unix characters/ commands by using shlex, as an input.
     output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
+    
+    # We return the decoded output
     return output.decode()
 
+
+# Defining the class NetCat with all the important functionalities
 class NetCat():
+
+    # The constructer function takes the arguments and a buffer (and the class itself)
     def __init__(self, args, buffer=None):
+
+        # We initiate the base functions of the object, defined by this class, depending on the input given.
         self.args = args
         self.buffer = buffer
+        
+        # Initializing a socket utilising the TCP protocol.
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
+    # The run function checks the for the listen argument, if given we start listening, 
+    # otherwise the program is implemented for sending.
     def run(self):
         if self.args.listen:
             self.listen() 
@@ -29,8 +50,9 @@ class NetCat():
             self.send()
 
 
-
+# If the script is not imported as a library we will execute the following code
 if __name__ == '__main__':
+
     # Creating a parser for the input using the argparser library
     parser = argparse.ArgumentParser(
         description='BHP Net Tool',
@@ -47,6 +69,7 @@ if __name__ == '__main__':
             echo 'ABC' | ./netcat.py -t 192.168.0.100 -p 135 # Echo the input to the servers specified port
             '''
         ))
+
     # Specifying the possible command line arguments
     parser.add_argument('-c', '--command', action='store_true', help='command shell')
     parser.add_argument('-t', '--target', default='192.168.0.225', help='IP of the target')
