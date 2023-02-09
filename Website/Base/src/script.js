@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { WebGLMultisampleRenderTarget } from 'three'
 import { randFloat, randInt } from 'three/src/math/MathUtils'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 // Cursor
 /*
@@ -69,6 +70,13 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width/ sizes.height)
 camera.position.z = 5
 scene.add(camera)
 
+// Orbit Control
+
+// We pass the camera and canvas as input, where the canvas is the area of the website, on which interactions with
+// the camera can be triggered (e.g. camera can be moved or zoomed).
+const controls = new OrbitControls(camera, canvas) 
+controls.enableDamping = true
+
 // Renderer
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
@@ -112,10 +120,18 @@ const tick = () =>
     // Update camera
 
     // camera.position.set(cursor.x * 3.5, cursor.y * 3.5, 5) = Moving the camera according to mouse position
-    // Moving camera in a circle around the mesh. Multiplying by 10 allows a bigger rotation and 
-    // by 4 places the camera further from the mesh
-    camera.position.set(Math.sin(cursor.x * 10) * 4, 0, Math.cos(cursor.x * 10) * 4) 
-    camera.lookAt(mesh.position)
+
+    /*  
+        This code is substituted by the OrbitControl in Three.js
+
+        Moving camera in a circle around the mesh. Multiplying by Math.PI * 2 allows a bigger rotation (more revolutions)
+        and by 4 places the camera further from the mesh
+        camera.position.set(Math.sin(cursor.x * Math.PI * 2) * 4, cursor.y * Math.PI * 2, Math.cos(cursor.x * Math.PI * 2) * 4) 
+        camera.lookAt(mesh.position)
+    */
+
+    // We update the controls, for the damping to work properly
+    controls.update()
 
     renderer.render(scene, camera)
 
