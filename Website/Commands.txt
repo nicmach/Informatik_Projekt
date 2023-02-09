@@ -1,0 +1,7 @@
+Install packages:
+
+npm install
+
+Start the instance:
+
+npm run dev
