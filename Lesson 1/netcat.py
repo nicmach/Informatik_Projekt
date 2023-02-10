@@ -49,6 +49,123 @@ class NetCat():
         else:
             self.send()
 
+    # This function is used when the script is run in sending mode
+    def send(self):
+        # Connect to the target and port
+        self.socket.connect((self.args.target, self.args.port))
+
+        # If there is a buffer, we will first send it to the target
+        if self.buffer:
+            self.socket.send(self.buffer)
+
+        # We utilise a try and except block to stop/ close the connection using CTRL+C 
+        try:
+
+            # In this loop we receive the data from the target
+            while True:
+                recv_len = 1
+                response = ''
+                while recv_len:
+                    data = self.socket.recv(4096)
+                    recv_len = len(data)
+                    response += data.decode()
+
+                    # As soon as we do not receive anymore data (i.e. the data buffer is not completely filled) we break the loop
+                    if recv_len < 4096:
+                        break
+
+                # If there is a response...
+                if response:
+                    print(response)
+                    # ...we take input and then...
+                    buffer = input('> ')
+                    buffer += '\n'
+                    # ...send the data.
+                    self.socket.send(buffer.encode())
+
+        # On KeyboardInterrupt (CTRL+C) we terminate the socket
+        except KeyboardInterrupt:
+            print('Terminated')
+            self.socket.close()
+            sys.exit()
+
+    # This function is used when the script is run in listening mode
+    def listen(self):
+        # Bind to target and port
+        self.socket.bind((self.args.target, self.args.port))
+        self.socket.listen(5)
+
+        # Start listening on the connected socket
+        while True:
+            client_socket, _ = self.socket.accept()
+            client_thread = threading.Thread(
+                target = self.handle, args = (client_socket,)
+            )
+            client_thread.start()
+
+    # The handle function executes the command corresponding to the arguments 
+    # (i.e. execute a command, upload a file, create a shell).
+    def handle(self, client_socket):
+
+        # If a command should be executed...
+        if self.args.execute:
+            # ...we execute the command...
+            output = execute(self.args.execute)
+            # ...and send the output to the client.
+            client_socket.send(output.encode())
+
+        # If a file should be uploaded...
+        elif self.args.upload:
+            # ...we first initiate the buffer...
+            file_buffer = b''
+            # ...and then run a loop...
+            while True:
+                # ...in which the received data is added to the file_buffer.
+                data = client_socket.recv(4096)
+                if data:
+                    file_buffer += data
+                else:
+                    break
+
+            # We then open the file and write the buffer to it.
+            with open(self.args.upload, 'wb') as f:
+                f.write(file_buffer)
+            
+            # We send a acknowledgement/ confirmation message, that we succesfully uploaded the file.
+            message = f'Saved file {self.args.upload}'
+            client_socket.send(message.encode())
+
+        # If a shell should be implemented...
+        elif self.args.command:
+
+            # ...we create a command buffer...
+            cmd_buffer = b''
+
+            # ...and then enter a loop.
+            while True:
+
+                # We then...
+                try:
+                    # We then wait for a command string, which then is being split up into its commands 
+                    # (it is split up by lines - i.e. \n). The \n is used in the send function etc. and
+                    # can here be used to symbolize the end of a command/ input.
+                    client_socket.send(b'BHP: #>')
+                    while '\n' not in cmd_buffer.decode():
+                        cmd_buffer += client_socket.recv(64)
+                    
+                    # We save the response to the command and send it back.
+                    response = execute(cmd_buffer.decode())
+                    if response:
+                        client_socket.send(response.encode())
+                    cmd_buffer = b''
+
+                # ...unless an error is raised. In that case we terminate the connection.
+                except Exception as e:
+                    print(f'Server killed {e}')
+                    self.socket.close()
+                    sys.exit()
+
+
 
 # If the script is not imported as a library we will execute the following code
 if __name__ == '__main__':
