@@ -1,0 +1,22 @@
+
+    mesh.position.x += randFloat(-0.005,0.005) * elapsedTime
+    mesh.position.y += randFloat(-0.005, 0.005) * elapsedTime
+    mesh.position.z += randFloat(-0.005, 0.005) * elapsedTime
+    mesh.rotation.x += 0.0025 * elapsedTime
+    mesh.rotation.y += 0.0025 * elapsedTime
+    mesh.rotation.z += 0.0025 * elapsedTime
+
+    mesh2.position.x += randFloat(-0.005,0.005) * elapsedTime
+    mesh2.position.y += randFloat(-0.005, 0.005) * elapsedTime
+    mesh2.position.z += randFloat(-0.005, 0.005) * elapsedTime
+    mesh2.rotation.x += 0.0025 * elapsedTime
+    mesh2.rotation.y += 0.0025 * elapsedTime
+    mesh2.rotation.z += 0.0025 * elapsedTime
+
+    mesh3.position.x += randFloat(-0.005,0.005) * elapsedTime
+    mesh3.position.y += randFloat(-0.005, 0.005) * elapsedTime
+    mesh3.position.z += randFloat(-0.005, 0.005) * elapsedTime
+    mesh3.rotation.x += 0.0025 * elapsedTime
+    mesh3.rotation.y += 0.0025 * elapsedTime
+    mesh3.rotation.z += 0.0025 * elapsedTime
+    

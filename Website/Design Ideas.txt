@@ -1,0 +1,11 @@
+Events/ Hacks:
+
+	Darstellung: Erde, welche mehrere Punkte hat, von denen jeder ein bestimmtes 
+			 Ereignis oder einen Hack darstellt.
+
+Scripts:
+
+	Darstellung: Verschiedene geometrische Formen und 3D Modelle, zwischen welchen
+			 mittels der Maus navigiert werden kann, und von denen jede/ jedes 
+			 Einzelne ein Script genauer erläutert.
+			 
