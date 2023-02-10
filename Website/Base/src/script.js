@@ -31,14 +31,14 @@ const scene = new THREE.Scene()
 // Objects
 
 const geometry_torus = new THREE.TorusGeometry( 10, 0.4, 24, 96 )
-const material_torus = new THREE.MeshBasicMaterial( { color: 0x555555, transparent: true, opacity: 0.5 } )
+const material_torus = new THREE.MeshBasicMaterial( { color: 0xf5f5f5, transparent: true, opacity: 0.5 } )
 const torus = new THREE.Mesh( geometry_torus, material_torus )
 torus.rotation.x = Math.PI / 2
 
 const moonTexture = new THREE.TextureLoader().load('Images/moon.jpg');
 
 const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(3, 32, 32),
+  new THREE.SphereGeometry(3, 64, 64),
   new THREE.MeshStandardMaterial({
     map: moonTexture,
   })
@@ -48,16 +48,28 @@ const moon = new THREE.Mesh(
 
 const moon_2 = moon.clone()
 const torus_2 = torus.clone()
+const moon_3 = moon.clone()
+const torus_3 = torus.clone()
+const moon_4 = moon.clone()
+const torus_4 = torus.clone()
 
 moon_2.position.set(15,5,25)
 torus_2.position.set(15,5,25)
+moon_3.position.set(-15,5,25)
+torus_3.position.set(-15,5,25)
+moon_4.position.set(15,5,-25)
+torus_4.position.set(15,5,-25)
 
 // Adding the objects
 
+scene.add(torus)
+scene.add(moon)
 scene.add(moon_2)
 scene.add(torus_2)
-scene.add(torus)
-scene.add(moon);
+scene.add(torus_3)
+scene.add(moon_3)
+scene.add(torus_4)
+scene.add(moon_4)
 
 /*
 const geometry_sphere = new THREE.SphereGeometry( 2.5, 25, 50 );
@@ -81,22 +93,62 @@ scene.background = spaceTexture;
 
 // Sizes
 const sizes = {
-    width: 800,
-    height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
 }
 
+
+// If the window is resized, we will also resize the displayed part and adjust the aspect ratios.
+
+window.addEventListener('resize', () => 
+{
+    sizes.width = window.innerWidth,
+    sizes.height = window.innerHeight
+
+    // Update camera aspect ratio
+    camera.aspect = sizes.width/ sizes.height
+    camera.updateProjectionMatrix()
+
+    renderer.setSize(sizes.width, sizes.height)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+})
+
+// Adding fullscreen functionality
+
+window.addEventListener('dblclick', () =>
+{
+    // Utilising webkit should also ensure compatibility with safari
+
+    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
+
+    if(!fullscreenElement)
+    {
+        if(canvas.requestFullscreen)
+        {
+            canvas.requestFullscreen()
+        }
+        else if(canvas.webkitRequestFullscreen)
+        {
+            canvas.webkitRequestFullscreen()
+        }
+        
+    }
+    else
+    {
+        if (document.exitFullscreen)
+        {
+            document.exitFullscreen()
+        }
+        else if(document.webkitExitFullscreen)
+        {
+            document.exitFullscreen()
+        }
+        
+    }
+})
+
 // Camera
-/*
-const aspectRatio = sizes.width/ sizes.height
-const camera = new THREE.OrthographicCamera(
-    -1 * aspectRatio,
-    1 * aspectRatio,
-    1,
-    -1,
-    0.1, // This is the near value, which...
-    100 // with this far value defines the range in which we can see objects.
-)
-*/
+
 const camera = new THREE.PerspectiveCamera(75, sizes.width/ sizes.height)
 camera.position.z = 15
 scene.add(camera)
@@ -113,6 +165,7 @@ const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
 renderer.setSize(sizes.width, sizes.height)
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 // Clock
 const clock = new THREE.Clock()
@@ -129,7 +182,7 @@ const tick = () =>
     torus.rotation.z += 0.0025
     torus.rotation.y += 0.0005
 
-    moon.rotation.z += 0.005
+    moon.rotation.z += 0.0025
     moon.rotation.x += 0.001
 
     torus_2.rotation.z -= 0.0025
@@ -137,6 +190,18 @@ const tick = () =>
 
     moon_2.rotation.z -= 0.005
     moon_2.rotation.x -= 0.001
+
+    torus_3.rotation.z += 0.0025
+    torus_3.rotation.y += 0.0005
+
+    moon_3.rotation.z += 0.005
+    moon_3.rotation.x += 0.001
+
+    torus_4.rotation.z -= 0.0025
+    torus_4.rotation.y -= 0.0005
+
+    moon_4.rotation.z -= 0.005
+    moon_4.rotation.x -= 0.001
 
 
   // Animation Loop
