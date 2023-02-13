@@ -8,7 +8,7 @@ import subprocess
 
 # Setting the host and the port to which the client is supposed to connect
 host = '127.0.0.1'
-port = 6668
+port = 6669
 
 # Creating a IPv4 - TCP - Network Interface
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

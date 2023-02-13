@@ -4,7 +4,7 @@ import socket
 
 # Declaring the ip and port of the server.
 host = '127.0.0.1'
-port = '6669'
+port = 6669
 
 # Initializing the server.
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
