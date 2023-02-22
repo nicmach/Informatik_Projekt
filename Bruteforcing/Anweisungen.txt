@@ -1,0 +1,22 @@
+Um das den Code, so wie angedacht, nutzen zu können muss auf dem HostOS Python installiert sein. Weiterhin
+sind die Python libraries customtkinter und pyautogui notwendig. Dies können mit pip install pyautogui und 
+pip install customtkinter installiert werden, es bietet sich hierfür an dies in einem Enviroment (z.B. einem
+Conda Enviroment zu tun), wenn dies auch nicht unbeding nötig ist. 
+Danach müssen die folgenden Commands in einer Shell genutzt werden, um die Skripte zu aktivieren.
+
+1. cd [Zielordner]
+
+Anstatt des [Zielordner] muss die Lokation des Codes eingegeben werden.
+
+2. python main.py 
+
+Dies startet das GUI, welches einen simplen Login Screen zeigt.
+
+3. python bruteforce.py
+
+Danach wird ein Informationsfenster erscheinen, welches einen auffordert auf das Passwortfeld zu drücken. 
+Dabei ist auch zu beachten, dass die Maus entweder über dem Login-Button zu platzieren ist, oder, vor
+dem Start des Bruteforcings, auf das eine beliebige Stelle des GUIs gedrückt werden muss.
+
+Im GUI wird man dann die automatisierte Eingabe von Passwörten und Nutzernamen sehen, während die Shell, 
+in der das GUI gestartet wurde für jeden Login-Versuch "Successfully logged in" anzeigt.
