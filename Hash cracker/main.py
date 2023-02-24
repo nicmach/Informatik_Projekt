@@ -20,7 +20,7 @@ def crack_hash(hash):
             if guess == hash:
                 print(colored('The password is: '+str(password),'green'))
                 entry_2.delete(0, customtkinter.END)
-                entry_2.insert(0, f"Password: {guess.hexdigest()}")
+                entry_2.insert(0, f"Password: {password}")
 
                 if save_file.get() == 1:
                     f = open("hash.txt", "a")
