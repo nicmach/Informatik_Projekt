@@ -40,7 +40,7 @@ def crack_hash(hash):
 def create_hash(password):
 
     with open('passwords.txt','a') as password_file:
-            password_file.write(password)
+            password_file.write(password + '\n')
 
     hash_obj_1=hashlib.md5()
     hash_obj_1.update(password.encode())
@@ -63,7 +63,7 @@ def create_hash(password):
     print('sha512: ',hash_obj_5.hexdigest())
 
     entry_4.delete(0, customtkinter.END)
-    entry_4.insert(0, f"Sha1: {hash_obj_2.hexdigest()}")
+    entry_4.insert(0, f"Sha256: {hash_obj_3.hexdigest()}")
 
     if save_file.get() == 1:
         f = open("hash.txt", "a")
