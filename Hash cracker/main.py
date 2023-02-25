@@ -14,7 +14,8 @@ save_file = customtkinter.IntVar()
 def crack_hash(hash):
 
     try:
-        password_list = str(urlopen('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt').read(), 'utf-8')
+        with open('passwords.txt','r') as password_file:
+            password_list = str(password_file.read()) # str(urlopen('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt').read(), 'utf-8')
         for password in password_list.split('\n'):
             guess = hashlib.sha256(bytes(password,'utf-8')).hexdigest()
             if guess == hash:
@@ -37,6 +38,9 @@ def crack_hash(hash):
         
 
 def create_hash(password):
+
+    with open('passwords.txt','a') as password_file:
+            password_file.write(password)
 
     hash_obj_1=hashlib.md5()
     hash_obj_1.update(password.encode())
