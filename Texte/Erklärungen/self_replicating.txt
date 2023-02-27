@@ -1,0 +1,25 @@
+In self_replicating.py ist, wie der Name schon vermuten lässt, Code für einen selbstreplizierenden "Virus" enthalten.
+Da jedoch, kein Virus programmiert wurde, ist es ungefährlich den Code auf dem eigenen System auszuprobieren. Um dies zu
+tun ladet den Code aus dem GitHub repositiory herunter oder copiert den code in eine python Datei mit dem entsprechenden
+Namen. Erstellt danach im selben Ordner eine beliebige Anzahl von Python-Dateien. Nachdem dies geschehen ist öffnet CMD oder
+die Windows-Powershell. Nun unternehmt die folgenden Schritte:
+
+1. Navigiert zu den Python-Dateien. Beispiel: cd /user/documents/python_files
+2. Gebt python self_replicating.py ein. Sobald das Skript fertig ist wird es Infection succeded anzeigen.
+3. Öffnet nun eine der Python-Dateien. Ihr sollten sehen, dass der Code in self_replicating.py auch in diese
+   Datei kopiert wurde.
+
+Im Fall, dass die anderen Python-Dateien bereits Code enthalten wird dieser nicht überschrieben sondern lediglich, hinter
+den self_replicating.py Code geschrieben.
+
+Schauen wir uns nun den Code in größerem Detail an. Zunächst importieren wir die zwei Python-Libraries sys und glob,
+welche wir nutzen werden um Datein, in unserem Fall die Python-Dateien, zu öffnen und zu bearbeiten.
+Innerhalb des ersten open-statements öffnen wir die derzeitige Datei, also self_replicating.py und lesen jede Zeile.
+Danach schreiben/ speichern wie den ganzen Code zwischen den Zeilen "# START" und "# END", welche uns als Start- und
+Schlussindikatoren dienen, in der Variable virus_code.
+In der folgenden Code-Zeile finden wir alle Dateien mit der Endung .py und .pyw. .py sind Python Skripte, die während 
+sie ausgeführt werden ein Terminal im Hintergrund geöffnet halten, und bei der Nutzung von .pyw Dateien, wird kein Terminal
+geöffnet.
+Im weiteren öffnet der Code jeweils die Python-Datei, findet mittels des Indikators "# START" heraus, ob die Datei
+bereits infiziert ist, und wenn nicht kopiert er den "Virus-Code" in die betroffene Datei. Zudem wird auch der 
+originielle Inhalt der Datein an den Virusteil angehangen. 
