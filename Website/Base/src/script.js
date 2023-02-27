@@ -61,29 +61,22 @@ torus.rotation.x = Math.PI / 2
 const moonTexture = new THREE.TextureLoader().load('Images/moon.jpg');
 
 const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(3, 64, 64),
+  new THREE.SphereGeometry(3.474, 64, 64),
   new THREE.MeshStandardMaterial({
     map: moonTexture,
   })
 );
 
-/*
-Cloning the objects
-*/
+const earth = new THREE.Mesh(
+    new THREE.SphereGeometry(12.742,64,64),
+    new THREE.MeshStandardMaterial({
+        color: 0x0f0fa5, transparent: true, opacity: 0.7
+    })
+)
 
-const moon_2 = moon.clone()
-const torus_2 = torus.clone()
-const moon_3 = moon.clone()
-const torus_3 = torus.clone()
-const moon_4 = moon.clone()
-const torus_4 = torus.clone()
-
-moon_2.position.set(15,5,25)
-torus_2.position.set(15,5,25)
-moon_3.position.set(-15,5,25)
-torus_3.position.set(-15,5,25)
-moon_4.position.set(15,5,-25)
-torus_4.position.set(15,5,-25)
+earth.position.set(0,0,0)
+torus.position.set(15,5,300)
+moon.position.set(15,5,300)
 
 /*
 Adding the objects
@@ -91,24 +84,24 @@ Adding the objects
 
 scene.add(torus)
 scene.add(moon)
-scene.add(moon_2)
-scene.add(torus_2)
-scene.add(torus_3)
-scene.add(moon_3)
-scene.add(torus_4)
-scene.add(moon_4)
+scene.add(earth)
+
 
 /*
 Adding the objects to the debug menu (only one because I am to lazy to add all)
 */
 
 gui.add(moon.position, 'y', -20, 20, 0.05).name('Moon Y') // The last three values are the minimum value, the maximum value and the step/ precision.
-gui.add(moon.position, 'x', -20, 20, 0.05).name('Moon X') // Alternativ we can use gui.add(moon.position, 'x').min(-20).max(20).step(0.05)
+gui.add(moon.position, 'x', -20, 20, 0.05).name('Moon X') // Alternative we can use gui.add(moon.position, 'x').min(-20).max(20).step(0.05)
 gui.add(moon.position, 'z', -20, 20, 0.05).name('Moon Z')
 gui.add(moon, 'visible').name('Moon') // This allows toggeling the boolean that decides wheter to show or not show an Object
 gui.add(moon.material, 'wireframe').name('Moon wireframe') // This allows toggeling the wireframe of an object
 
-
+gui.add(earth.position, 'y', -20, 20, 0.05).name('Earth Y')
+gui.add(earth.position, 'x', -20, 20, 0.05).name('Earth X') 
+gui.add(earth.position, 'z', -20, 20, 0.05).name('Earth Z')
+gui.add(earth, 'visible').name('Earth') 
+gui.add(earth.material, 'wireframe').name('Earth wireframe') 
 
 //gui.addColor(material_torus, '#ff00ff')
 
@@ -261,26 +254,15 @@ const tick = () =>
     torus.rotation.z += parameters.z_speed
     torus.rotation.y += parameters.x_speed
 
-    moon.rotation.z += parameters.z_speed
-    moon.rotation.x += parameters.y_speed
+    //moon.rotation.z += parameters.z_speed
+    //moon.rotation.x += parameters.y_speed
 
-    torus_2.rotation.z -= parameters.z_speed
-    torus_2.rotation.y -= parameters.x_speed
+    earth.rotation.z -= parameters.z_speed
+    earth.rotation.x -= parameters.y_speed
 
-    moon_2.rotation.z -= parameters.z_speed
-    moon_2.rotation.x -= parameters.y_speed
-
-    torus_3.rotation.z += parameters.z_speed
-    torus_3.rotation.y += parameters.x_speed
-
-    moon_3.rotation.z += parameters.z_speed
-    moon_3.rotation.x += parameters.y_speed
-
-    torus_4.rotation.z -= parameters.z_speed
-    torus_4.rotation.y -= parameters.x_speed
-
-    moon_4.rotation.z -= parameters.z_speed
-    moon_4.rotation.x -= parameters.y_speed
+	moon.position.x = Math.cos( elapsedTime ) * 100;
+	moon.position.z = Math.sin( elapsedTime ) * 100 - 1;
+	//moon.position.z = Math.cos( elapsedTime * 8 ) * 4 + 30;
 
 
   // Animation Loop
