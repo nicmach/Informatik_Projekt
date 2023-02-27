@@ -1,0 +1,50 @@
+Eine Shell bzw. eine Command-line ist, stark vereinfacht, eine Benutzeroberfläche des Betriebssystems.
+Im Vergleich zu anderen Nutzeroberflächen sind Shells etc. aber weniger graphisch und oft an Administratoren,
+Programmierer etc. gerichtet.
+Um die Resourcen dieser Website vollends nutzen zu können, sind grundlegende Kentnisse dieser Oberflächen
+wichtig, weshalb hier in kürze die wichtigsten Punkte erklärt werden.
+Zunächst sollte angemerkt werden, dass verschiedene Operating Systems, verschiedene Ausführungen einer Shell
+haben in Windows sind CMD und Powershell die verbreitetsten, in MacOS die Mac Shell und in Linux ist es Bash.
+Ich werde mich in dieser kurzen Einführung auf die ersten beiden beschränken, allerdings sind ein großteil der
+Befehle auf allen Plattformen gleich.
+
+1. Getting-Started
+
+Bevor wir mit den grundliegenden Befehlen beginnen können müssen wir die Shells zunächst öffnen.
+    - Um CMD zu öffnen nutze windows+r und gib danach cmd ein.
+    - Um Powershell zu öffnen nutze windows+r und gib danach powershell ein.
+
+Alternativ zu den beiden Methoden können sowohl Powershell als auch CMD über das Windows-Startmenü 
+geöffnet werden.
+
+2. Command Bootcamp
+
+Es gibt unzählbare Befehle, die eine Systemadministrator, ein Programmierer oder eine Informatiker 
+nutzen kann, um seine Aufgaben zu erledigen oder Prozesse zu automatisieren. Aber keine Sorge schließlich
+setzt diese Website nicht vorraus, dass ihr ein Experte seid, daher werden euch die essentiellen Befehle
+hier vorgestellt.
+
+cd (change directory) - Wer Englisch kann wird sich der Funktion nun bereits bewusst sein, für den Rest cd 
+                        kann in Windows, aber auch Linux und MacOS, zum Navigieren zwischen Ordnern genutzt werden.
+                        Um den Befehl nutzen zu können muss cd von einem Ordnerpfad gefolgt sein. Ein Beispiel
+                        wäre cd Documents\Zielordner, hierbei würde man in den Ordner "Zielordner" navigieren.
+                        
+                        Es ist wichtig anzumerken, dass bei Ordner-Namen wie geheimer Ordner Anführungszeichen 
+                        genutzt werden müssen, also cd "geheimer Ordner".
+
+                        Um von einem Ordner in den darüber liegenden Ordner zu navigieren nutzt man cd .. auf unser
+                        vorheriges Beispiel bezogen hieße dies cd .. würde uns aus dem Zielordner in den Documents 
+                        Ordner bringen.
+
+                        Die Wichtigkeit von cd entsteht dadurch, dass man nur mit den Dateien des derzeitigen Ordners 
+                        interagieren kann und daher oft zwischen verschiedenen Ordnern navigieren muss.
+
+cat (concatenate)     - Mithilfe des cat Befehls kann man aus der Shell den Inhalt verschiedener Dateien anzeigen. 
+                        Anstatt also die Datein text.txt in einem Texteditor zu öffnen kann man cat text.txt nutzen,
+                        um den Inhalt innerhalb der Shell aufzulisten.
+
+python                - Dieser Befehl, gefolgt von dem Namen einer Python-Datei, kann genutzt werden, um eine Python-Datei
+                        auszuführen.
+
+ipconfig              - Innerhalb von Windows erlaubt dieser Befehl die Einsicht in diverse Netzwerkeinstellungen
+                        des Computers. Für Linux und MacOS ist das equivalent ifconfig.
