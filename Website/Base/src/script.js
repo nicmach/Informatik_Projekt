@@ -1,290 +1,289 @@
-import * as THREE from 'three'
-import { WebGLMultisampleRenderTarget } from 'three'
-import { randFloat, randInt } from 'three/src/math/MathUtils'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import GUI from 'lil-gui'
+import * as THREE from 'three';
 
-/*
-Debug GUI
-*/
+import Stats from 'three/addons/libs/stats.module.js';
 
-const gui = new GUI()
+import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { FilmPass } from 'three/addons/postprocessing/FilmPass.js';
 
-const parameters = {
-	color: '#ffffff',
-    z_speed: 0.0025,
-    x_speed: 0.0005,
-    y_speed: 0.001
-}
+const radius = 6371;
+const tilt = 0.41;
+const rotationSpeed = 0.02;
 
-/*
-Cursor
-*/
+const cloudsScale = 1.005;
+const moonScale = 0.23;
 
-/*
-    The javascrip code below gets the current position of the 
-    mouse and the executes the defined function. The X-Value of the 
-    mouse is gets bigger to the right and Y-Value gets smaller at the
-    top.
-*/
-const cursor = {
-    x: 0,
-    y: 0
-}
-window.addEventListener('mousemove', (event) => {
-    cursor.x = event.clientX / sizes.width - 0.5
-    // We invert the y value (i.e. using another -), because of how it functions within three.js
-    // and thereby prevent animations, based on this value, to look unnatural.
-    cursor.y = - (event.clientY / sizes.height - 0.5) 
-})
+const MARGIN = 0;
+let SCREEN_HEIGHT = window.innerHeight - MARGIN * 2;
+let SCREEN_WIDTH = window.innerWidth;
 
-/* 
-Canvas
-*/
-const canvas = document.querySelector('canvas.webgl')
+let camera, controls, scene, renderer, stats;
+let geometry, meshPlanet, meshClouds, meshMoon;
+let dirLight;
 
-/*
-Scene
-*/
-const scene = new THREE.Scene()
+let composer;
 
+const textureLoader = new THREE.TextureLoader();
 
-/*
-Objects
-*/
+let d, dPlanet, dMoon;
+const dMoonVec = new THREE.Vector3();
 
-const geometry_torus = new THREE.TorusGeometry( 10, 0.4, 24, 96 )
-const material_torus = new THREE.MeshBasicMaterial( { color: 0xf5f5f5, transparent: true, opacity: 0.5 } )
-const torus = new THREE.Mesh( geometry_torus, material_torus )
-torus.rotation.x = Math.PI / 2
+const clock = new THREE.Clock();
 
-const moonTexture = new THREE.TextureLoader().load('Images/moon.jpg');
+init();
+animate();
 
-const moon = new THREE.Mesh(
-  new THREE.SphereGeometry(3.474, 64, 64),
-  new THREE.MeshStandardMaterial({
-    map: moonTexture,
-  })
-);
+function init() {
 
-const earth = new THREE.Mesh(
-    new THREE.SphereGeometry(12.742,64,64),
-    new THREE.MeshStandardMaterial({
-        color: 0x0f0fa5, transparent: true, opacity: 0.7
-    })
-)
+    camera = new THREE.PerspectiveCamera( 25, SCREEN_WIDTH / SCREEN_HEIGHT, 50, 1e7 );
+    camera.position.z = radius * 5;
 
-earth.position.set(0,0,0)
-torus.position.set(15,5,300)
-moon.position.set(15,5,300)
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2( 0x000000, 0.00000025 );
 
-/*
-Adding the objects
-*/
+    dirLight = new THREE.DirectionalLight( 0xffffff );
+    dirLight.position.set( - 1, 0, 1 ).normalize();
+    scene.add( dirLight );
 
-scene.add(torus)
-scene.add(moon)
-scene.add(earth)
+    const materialNormalMap = new THREE.MeshPhongMaterial( {
 
+        specular: 0x333333,
+        shininess: 15,
+        map: textureLoader.load( 'Images/earth_atmos_2048.jpg' ),
+        //map: textureLoader.load('Images/earth_lights_2048.png'),
+        specularMap: textureLoader.load( 'Images/earth_specular_2048.jpg' ),
+        normalMap: textureLoader.load( 'Images/earth_normal_2048.jpg' ),
 
-/*
-Adding the objects to the debug menu (only one because I am to lazy to add all)
-*/
+        // y scale is negated to compensate for normal map handedness.
+        normalScale: new THREE.Vector2( 0.85, - 0.85 )
 
-gui.add(moon.position, 'y', -20, 20, 0.05).name('Moon Y') // The last three values are the minimum value, the maximum value and the step/ precision.
-gui.add(moon.position, 'x', -20, 20, 0.05).name('Moon X') // Alternative we can use gui.add(moon.position, 'x').min(-20).max(20).step(0.05)
-gui.add(moon.position, 'z', -20, 20, 0.05).name('Moon Z')
-gui.add(moon, 'visible').name('Moon') // This allows toggeling the boolean that decides wheter to show or not show an Object
-gui.add(moon.material, 'wireframe').name('Moon wireframe') // This allows toggeling the wireframe of an object
+    } );
 
-gui.add(earth.position, 'y', -20, 20, 0.05).name('Earth Y')
-gui.add(earth.position, 'x', -20, 20, 0.05).name('Earth X') 
-gui.add(earth.position, 'z', -20, 20, 0.05).name('Earth Z')
-gui.add(earth, 'visible').name('Earth') 
-gui.add(earth.material, 'wireframe').name('Earth wireframe') 
+    // planet
 
-//gui.addColor(material_torus, '#ff00ff')
+    geometry = new THREE.SphereGeometry( radius, 100, 50 );
 
-gui.add(torus.position, 'y', -20, 20, 0.05).name('Torus Y')
-gui.add(torus.position, 'x', -20, 20, 0.05).name('Torus X')
-gui.add(torus.position, 'z', -20, 20, 0.05).name('Torus Z')
-gui.add(torus, 'visible').name('Torus')
-gui.add(torus.material, 'wireframe').name('Torus wireframe') 
+    meshPlanet = new THREE.Mesh( geometry, materialNormalMap );
+    meshPlanet.rotation.y = 0;
+    meshPlanet.rotation.z = tilt;
+    scene.add( meshPlanet );
 
-gui
-    .addColor(parameters, 'color')
-    .onChange(() => 
-    {
-        material_torus.color.set(parameters.color)
-    })
+    // location points
 
-/*
-const geometry_sphere = new THREE.SphereGeometry( 2.5, 25, 50 );
-const material_sphere = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-const sphere = new THREE.Mesh( geometry_sphere, material_sphere );
-scene.add(sphere);
-*/
-
-/*
-Lights
-*/
-
-const pointLight = new THREE.PointLight(0xD2AFFF);
-pointLight.position.set(3, 3, 3);
-
-const ambientLight = new THREE.AmbientLight(0xAB90F7);
-scene.add(pointLight, ambientLight);
-
-/*
-Background
-*/
-
-const spaceTexture = new THREE.TextureLoader().load('Images/Space.jpg');
-scene.background = spaceTexture;
-
-
-/*
-Sizes
-*/
-
-const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight
-}
-
-
-// If the window is resized, we will also resize the displayed part and adjust the aspect ratios.
-
-window.addEventListener('resize', () => 
-{
-    sizes.width = window.innerWidth,
-    sizes.height = window.innerHeight
-
-    // Update camera aspect ratio
-    camera.aspect = sizes.width/ sizes.height
-    camera.updateProjectionMatrix()
-
-    renderer.setSize(sizes.width, sizes.height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-})
-
-// Adding fullscreen functionality
-
-window.addEventListener('dblclick', () =>
-{
-    // Utilising webkit should also ensure compatibility with safari
-
-    const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
-
-    if(!fullscreenElement)
-    {
-        if(canvas.requestFullscreen)
-        {
-            canvas.requestFullscreen()
-        }
-        else if(canvas.webkitRequestFullscreen)
-        {
-            canvas.webkitRequestFullscreen()
-        }
-        
-    }
-    else
-    {
-        if (document.exitFullscreen)
-        {
-            document.exitFullscreen()
-        }
-        else if(document.webkitExitFullscreen)
-        {
-            document.exitFullscreen()
-        }
-        
-    }
-})
-
-/*
-Camera
-*/
-
-const camera = new THREE.PerspectiveCamera(75, sizes.width/ sizes.height)
-camera.position.z = 15
-scene.add(camera)
-
-/*
-Orbit Control
-*/
-
-// We pass the camera and canvas as input, where the canvas is the area of the website, on which interactions with
-// the camera can be triggered (e.g. camera can be moved or zoomed).
-const controls = new OrbitControls(camera, canvas) 
-controls.enableDamping = true
-
-/*
-Renderer
-*/
-
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
-})
-renderer.setSize(sizes.width, sizes.height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
-/*
-Clock
-*/
-
-const clock = new THREE.Clock()
-
-/*
-Animation/ frame update
-*/
-
-const tick = () =>
-{
-    /*
-    Clock
-    */
-
-    const elapsedTime = clock.getElapsedTime()
+    //const pointMaterial = new THREE.MeshBasicMaterial({color: red});
+    //pointGeometry = new THREE.SphereGeometry(5, 50, 50);
     
-    /*
-    Update the object
+    //meshPoint = new THREE.Mesh(pointGeometry, pointMaterial);
+    //meshPoint.position.set(6371, 0, 0);
+
+    //scene.add(meshPoint);
+    const theta = 0.5;// This value should be smaller or equal to pi
+    const phi = 0.89;// This value should be bigger or equal to zero and smaller or equal to pi
+
+    const geometryPoint = new THREE.SphereGeometry(50,32,16);
+    const materialPoint = new THREE.MeshBasicMaterial( {color: 0xffff00} )
+    const sphere = new THREE.Mesh(geometryPoint, materialPoint)
+    sphere.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi))
+    meshPlanet.add(sphere)
+    
+    sphere.addEventListener('click', function() {
+        console.log('Point clicked!')
+    })
+
+    //meshPlanet.add(point);
+
+    // clouds
+
+    const materialClouds = new THREE.MeshLambertMaterial( {
+
+        map: textureLoader.load( 'Images/earth_clouds_1024.png' ),
+        transparent: true
+
+    } );
+
+    meshClouds = new THREE.Mesh( geometry, materialClouds );
+    meshClouds.scale.set( cloudsScale, cloudsScale, cloudsScale );
+    meshClouds.rotation.z = tilt;
+    scene.add( meshClouds );
+
+    // moon
+
+    const materialMoon = new THREE.MeshPhongMaterial( {
+
+        map: textureLoader.load( 'Images/moon_1024.jpg' )
+
+    } );
+
+    meshMoon = new THREE.Mesh( geometry, materialMoon );
+    meshMoon.position.set( radius * 5, 0, 0 );
+    meshMoon.scale.set( moonScale, moonScale, moonScale );
+    scene.add( meshMoon );
+
+    // stars
+
+    const r = radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
+
+    const vertices1 = [];
+    const vertices2 = [];
+
+    const vertex = new THREE.Vector3();
+
+    for ( let i = 0; i < 250; i ++ ) {
+
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random() * 2 - 1;
+        vertex.multiplyScalar( r );
+
+        vertices1.push( vertex.x, vertex.y, vertex.z );
+
+    }
+
+    for ( let i = 0; i < 1500; i ++ ) {
+
+        vertex.x = Math.random() * 2 - 1;
+        vertex.y = Math.random() * 2 - 1;
+        vertex.z = Math.random() * 2 - 1;
+        vertex.multiplyScalar( r );
+
+        vertices2.push( vertex.x, vertex.y, vertex.z );
+
+    }
+
+    starsGeometry[ 0 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
+    starsGeometry[ 1 ].setAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
+
+    const starsMaterials = [
+        new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
+        new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
+    ];
+
+    for ( let i = 10; i < 30; i ++ ) {
+
+        const stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
+
+        stars.rotation.x = Math.random() * 6;
+        stars.rotation.y = Math.random() * 6;
+        stars.rotation.z = Math.random() * 6;
+        stars.scale.setScalar( i * 10 );
+
+        stars.matrixAutoUpdate = false;
+        stars.updateMatrix();
+
+        scene.add( stars );
+
+    }
+
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+    document.body.appendChild( renderer.domElement );
+
+    // fly controls
+
+    controls = new FlyControls( camera, renderer.domElement );
+
+    controls.movementSpeed = 1000;
+    controls.domElement = renderer.domElement;
+    controls.rollSpeed = Math.PI / 12;
+    controls.autoForward = false;
+    controls.dragToLook = true;
+
+    /* Adding mouse click
+
+    renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, true)
+
+    function onDocumentMouseDown(event) {
+        var mouse = new THREE.Vector2();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = (event.clientY / window.innerHeight) * 2 + 1;
+
+        var raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+
+        var intersects = raycaster.intersectObjects(scene.children, true);
+
+        if (intersects.length > 0) {
+            var object = intersects[0].object;
+            console.log('Object clicked: ', object);
+        }
+    }
     */
+    //
 
-    torus.rotation.z += parameters.z_speed
-    torus.rotation.y += parameters.x_speed
+    stats = new Stats();
+    document.body.appendChild( stats.dom );
 
-    //moon.rotation.z += parameters.z_speed
-    //moon.rotation.x += parameters.y_speed
+    window.addEventListener( 'resize', onWindowResize );
 
-    earth.rotation.z -= parameters.z_speed
-    earth.rotation.x -= parameters.y_speed
+    // postprocessing
 
-	moon.position.x = Math.cos( elapsedTime ) * 100;
-	moon.position.z = Math.sin( elapsedTime ) * 100 - 1;
-	//moon.position.z = Math.cos( elapsedTime * 8 ) * 4 + 30;
+    const renderModel = new RenderPass( scene, camera );
+    const effectFilm = new FilmPass( 0.35, 0.75, 2048, false );
 
+    composer = new EffectComposer( renderer );
 
-  // Animation Loop
-  
+    composer.addPass( renderModel );
+    composer.addPass( effectFilm );
 
-    // camera.position.set(cursor.x * 3.5, cursor.y * 3.5, 5) = Moving the camera according to mouse position
-
-    /*  
-        This code is substituted by the OrbitControl in Three.js
-
-        Moving camera in a circle around the mesh. Multiplying by Math.PI * 2 allows a bigger rotation (more revolutions)
-        and by 4 places the camera further from the mesh
-        camera.position.set(Math.sin(cursor.x * Math.PI * 2) * 4, cursor.y * Math.PI * 2, Math.cos(cursor.x * Math.PI * 2) * 4) 
-        camera.lookAt(mesh.position)
-    */
-
-    // We update the controls, for the damping to work properly
-    controls.update()
-
-    renderer.render(scene, camera)
-
-    window.requestAnimationFrame(tick)
 }
 
-tick()
+function onWindowResize() {
+
+    SCREEN_HEIGHT = window.innerHeight;
+    SCREEN_WIDTH = window.innerWidth;
+
+    camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+    composer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+
+}
+
+function animate() {
+
+    requestAnimationFrame( animate );
+
+    render();
+    stats.update();
+
+}
+
+function render() {
+
+    // rotate the planet and clouds
+
+    const delta = clock.getDelta();
+
+    meshPlanet.rotation.y += rotationSpeed * delta;
+    meshClouds.rotation.y += 1.25 * rotationSpeed * delta;
+
+    // slow down as we approach the surface
+
+    dPlanet = camera.position.length();
+
+    dMoonVec.subVectors( camera.position, meshMoon.position );
+    dMoon = dMoonVec.length();
+
+    if ( dMoon < dPlanet ) {
+
+        d = ( dMoon - radius * moonScale * 1.01 );
+
+    } else {
+
+        d = ( dPlanet - radius * 1.01 );
+
+    }
+
+    controls.movementSpeed = 0.33 * d;
+    controls.update( delta );
+
+    composer.render( delta );
+
+}
