@@ -17,3 +17,17 @@ body
     left: 0;
     outline: none;
 }
+
+.right-half {
+    background-color: rgba(0,0,0,0.6);
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 33%;
+    height: 100%;
+    display: none;
+}
+
+.text-white {
+    color: white;
+}

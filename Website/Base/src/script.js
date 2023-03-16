@@ -87,11 +87,18 @@ function init() {
     sphere.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi))
     meshPlanet.add(sphere)
     
-    sphere.addEventListener('click', function() {
-        console.log('Point clicked!')
+    /*
+    const mouse = new THREE.Vector2()
+
+    window.addEventListener('mousemove', (event) => 
+    {
+        mouse.x = event.clientX / window.innerWidth * 2 -1;
+        mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+        console.log(mouse)
     })
 
-    //meshPlanet.add(point);
+    */
 
     // clouds
 
@@ -194,26 +201,38 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = true;
 
-    /* Adding mouse click
+    // Adding mouse click
 
     renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, true)
 
     function onDocumentMouseDown(event) {
         var mouse = new THREE.Vector2();
         mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = (event.clientY / window.innerHeight) * 2 + 1;
+        mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
 
         var raycaster = new THREE.Raycaster();
         raycaster.setFromCamera(mouse, camera);
+        //console.log(mouse)
+        // console.log(scene.children)
 
+        //const objectsToTest = [sphere]
         var intersects = raycaster.intersectObjects(scene.children, true);
-
+        //console.log(intersects)
         if (intersects.length > 0) {
             var object = intersects[0].object;
-            console.log('Object clicked: ', object);
+            
+            switch(object)
+            {
+                case sphere:
+                    const divSphere = document.querySelector('#divSphere')
+                    // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
+                    divSphere.style.display = divSphere.style.display == 'block' ? 'none' : 'block'; 
+                    console.log('Point was clicked'); 
+                    break
+            }
         }
     }
-    */
+    
     //
 
     stats = new Stats();
@@ -257,6 +276,31 @@ function animate() {
 
 function render() {
 
+    // Raycast
+    /*
+    raycaster.setFromCamera(mouse, camera);
+    
+    const objectsToTest = [sphere]
+    const intersects = raycaster.intersectObject(objectsToTest)
+    
+    if (intersects)
+    {
+        console.log(intersects)
+    }
+    
+    for (const intersect of intersects)
+    {
+        console.log('Intersected with point!')
+    }
+
+    for (const object of objectsToTest)
+    {
+        if (!intersects.find(intersect => intersect.object === object))
+        {
+            object.material.color.set('#ff00ff')
+        }
+    }
+    */
     // rotate the planet and clouds
 
     const delta = clock.getDelta();
