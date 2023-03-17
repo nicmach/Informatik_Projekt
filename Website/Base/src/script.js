@@ -71,35 +71,33 @@ function init() {
 
     // location points
 
-    //const pointMaterial = new THREE.MeshBasicMaterial({color: red});
-    //pointGeometry = new THREE.SphereGeometry(5, 50, 50);
-    
-    //meshPoint = new THREE.Mesh(pointGeometry, pointMaterial);
-    //meshPoint.position.set(6371, 0, 0);
-
-    //scene.add(meshPoint);
-    const theta = 0.5;// This value should be smaller or equal to pi
-    const phi = 0.89;// This value should be bigger or equal to zero and smaller or equal to pi
+    // Washinngton - Hashing
+    const theta = 1.3;// This value should be smaller or equal to pi
+    const phi = 0.725;// This value should be bigger or equal to zero and smaller or equal to pi
 
     const geometryPoint = new THREE.SphereGeometry(50,32,16);
-    const materialPoint = new THREE.MeshBasicMaterial( {color: 0xffff00} )
-    const sphere = new THREE.Mesh(geometryPoint, materialPoint)
-    sphere.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi))
-    meshPlanet.add(sphere)
+    const materialPoint = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    const washington = new THREE.Mesh(geometryPoint, materialPoint);
+    washington.position.set(radius * Math.cos(theta) * Math.sin(phi), radius * Math.sin(theta) * Math.sin(phi), radius * Math.cos(phi));
+    meshPlanet.add(washington);
     
-    /*
-    const mouse = new THREE.Vector2()
+    // Beverly Hills - MySpace
+    const theta_2 = 2.175;
+    const phi_2 = 0.75;
 
-    window.addEventListener('mousemove', (event) => 
-    {
-        mouse.x = event.clientX / window.innerWidth * 2 -1;
-        mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    const beverly_hills = washington.clone();
+    beverly_hills.position.set(radius * Math.cos(theta_2) * Math.sin(phi_2), radius * Math.sin(theta_2) * Math.sin(phi_2), radius * Math.cos(phi_2));
+    meshPlanet.add(beverly_hills);
 
-        console.log(mouse)
-    })
+    // Hangzhou - Alibaba 
+    const theta_3 = 2.15;
+    const phi_3 = 2.35;
 
-    */
+    const hangzhou = washington.clone();
+    hangzhou.position.set(radius * Math.cos(theta_3) * Math.sin(phi_3), radius * Math.sin(theta_3) * Math.sin(phi_3), radius * Math.cos(phi_3));
+    meshPlanet.add(hangzhou);
 
+    
     // clouds
 
     const materialClouds = new THREE.MeshLambertMaterial( {
@@ -220,14 +218,26 @@ function init() {
         //console.log(intersects)
         if (intersects.length > 0) {
             var object = intersects[0].object;
+
+            const divWashington = document.querySelector('#divWashington')
+            const divBeverly = document.querySelector('#divBeverly')
+
             
             switch(object)
             {
-                case sphere:
-                    const divSphere = document.querySelector('#divSphere')
+
+
+                case washington:
                     // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
-                    divSphere.style.display = divSphere.style.display == 'block' ? 'none' : 'block'; 
-                    console.log('Point was clicked'); 
+                    divWashington.style.display = divWashington.style.display == 'block' ? 'none' : 'block'; 
+                    divBeverly.style.display = 'none'; 
+                    console.log('Washington was clicked'); 
+                    break
+                case beverly_hills:
+                    // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
+                    divBeverly.style.display = divBeverly.style.display == 'block' ? 'none' : 'block'; 
+                    divWashington.style.display = 'none'; 
+                    console.log('Beverly Hills was clicked'); 
                     break
             }
         }
@@ -276,31 +286,6 @@ function animate() {
 
 function render() {
 
-    // Raycast
-    /*
-    raycaster.setFromCamera(mouse, camera);
-    
-    const objectsToTest = [sphere]
-    const intersects = raycaster.intersectObject(objectsToTest)
-    
-    if (intersects)
-    {
-        console.log(intersects)
-    }
-    
-    for (const intersect of intersects)
-    {
-        console.log('Intersected with point!')
-    }
-
-    for (const object of objectsToTest)
-    {
-        if (!intersects.find(intersect => intersect.object === object))
-        {
-            object.material.color.set('#ff00ff')
-        }
-    }
-    */
     // rotate the planet and clouds
 
     const delta = clock.getDelta();
