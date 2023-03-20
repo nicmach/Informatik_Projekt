@@ -85,17 +85,25 @@ function init() {
     const theta_2 = 2.175;
     const phi_2 = 0.75;
 
-    const beverly_hills = washington.clone();
-    beverly_hills.position.set(radius * Math.cos(theta_2) * Math.sin(phi_2), radius * Math.sin(theta_2) * Math.sin(phi_2), radius * Math.cos(phi_2));
-    meshPlanet.add(beverly_hills);
+    const beverlyHills = washington.clone();
+    beverlyHills.position.set(radius * Math.cos(theta_2) * Math.sin(phi_2), radius * Math.sin(theta_2) * Math.sin(phi_2), radius * Math.cos(phi_2));
+    meshPlanet.add(beverlyHills);
 
     // Hangzhou - Alibaba 
-    const theta_3 = 2.15;
-    const phi_3 = 2.35;
+    const theta_3 = 2.3;
+    const phi_3 = 2.4;
 
     const hangzhou = washington.clone();
     hangzhou.position.set(radius * Math.cos(theta_3) * Math.sin(phi_3), radius * Math.sin(theta_3) * Math.sin(phi_3), radius * Math.cos(phi_3));
     meshPlanet.add(hangzhou);
+
+    // San Francisco - Alibaba 
+    const theta_4 = 2.175;
+    const phi_4 = 0.85;
+
+    const sanFrancisco = washington.clone();
+    sanFrancisco.position.set(radius * Math.cos(theta_4) * Math.sin(phi_4), radius * Math.sin(theta_4) * Math.sin(phi_4), radius * Math.cos(phi_4));
+    meshPlanet.add(sanFrancisco);
 
     
     // clouds
@@ -221,6 +229,8 @@ function init() {
 
             const divWashington = document.querySelector('#divWashington')
             const divBeverly = document.querySelector('#divBeverly')
+            const divSanFrancisco = document.querySelector('#divSanFrancisco')
+            const divHangzhou = document.querySelector('#divHangzhou')
 
             
             switch(object)
@@ -231,14 +241,37 @@ function init() {
                     // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
                     divWashington.style.display = divWashington.style.display == 'block' ? 'none' : 'block'; 
                     divBeverly.style.display = 'none'; 
+                    divHangzhou.style.display = 'none'; 
+                    divSanFrancisco.style.display = 'none';
                     console.log('Washington was clicked'); 
+                    controls.dispose();
                     break
-                case beverly_hills:
+                case beverlyHills:
                     // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
                     divBeverly.style.display = divBeverly.style.display == 'block' ? 'none' : 'block'; 
                     divWashington.style.display = 'none'; 
+                    divHangzhou.style.display = 'none'; 
+                    divSanFrancisco.style.display = 'none';
                     console.log('Beverly Hills was clicked'); 
                     break
+                case sanFrancisco:
+                    // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
+                    divSanFrancisco.style.display = divSanFrancisco.style.display == 'block' ? 'none' : 'block';  
+                    divHangzhou.style.display = 'none'; 
+                    divBeverly.style.display = 'none'; 
+                    divWashington.style.display = 'none'; 
+                    console.log('San Francisco was clicked'); 
+                    break
+                case hangzhou:
+                    // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
+                    divHangzhou.style.display = divHangzhou.style.display == 'block' ? 'none' : 'block'; 
+                    divSanFrancisco.style.display = 'none';
+                    divBeverly.style.display = 'none'; 
+                    divWashington.style.display = 'none'; 
+                    console.log('Hangzhou was clicked'); 
+                    break
+                
+            
             }
         }
     }

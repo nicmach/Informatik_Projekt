@@ -26,8 +26,136 @@ body
     width: 33%;
     height: 100%;
     display: none;
+    overflow-y: auto;
 }
 
 .text-white {
     color: white;
+    display: inline;
+    vertical-align: center;
+}
+
+.header {
+    font-size: 25px;
+    font-weight: 600;
+    font-family: 'Roboto', sans-serif;
+    /**background-image: linear-gradient(to left, #553c9a, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;**/
+    color: #b393d3;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0px #957dad,
+                 1px 1.5px 0px #957dad,
+                 1px 2px 0px #957dad,
+                 1px 2.5px 0px #957dad,
+                 1px 3px 0px #957dad,
+                 1px 3.5px 0px #957dad,
+                 1px 10px 5px rgba(255, 255, 255, 0.5),
+                 1px 15px 10px rgba(255, 255, 255,0.4),
+                 1px 20px 30px rgba(255, 255, 255,0.3),
+                 1px 25px 50px rgba(255, 255, 255,0.2);
+    text-align: center;
+    padding-top: 15px;
+
+}
+
+pre code {
+    background-color: #eee;
+    border: 2px solid #999;
+    display: block;
+    padding: 10px;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+    white-space: pre-line;
+}
+
+.button_close {
+    border-radius: 50%;
+    padding: 0.5em;
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    color: white;
+    position: relative;
+    background-color: transparent;
+    padding-right: 10px;
+}
+
+.button_close:hover {
+    border: 2px solid white;
+    background-color: white;
+    color: #ffffff;
+}
+
+.button_close::before {
+    content: " ";
+    position: absolute;
+    display: block;
+    background-color: rgb(255, 255, 255);
+    width: 2px;
+    left: 12px;
+    top: 5px;
+    bottom: 5px;
+    transform: rotate(45deg)
+}
+
+.button_close::after {
+    content: " ";
+    position: absolute;
+    display: block;
+    background-color: rgb(255, 255, 255);
+    height: 2px;
+    top: 12px;
+    left: 5px;
+    right: 5px;
+    transform: rotate(45deg);
+}
+
+
+.button_code {
+    border-radius: 50%;
+    padding: 0.5em;
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    color: white;
+    position: relative;
+    background-color: transparent;
+    padding-right: 10px;
+}
+
+.arrow-right{
+    border:solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.button_code:hover {
+    border: 2px solid white;
+    background-color: white;
+    color: #ffffff;
+}
+
+.container {
+    position: relative;
+    width: 90%;
+    height: 35px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 10px;
+}
+
+.button-right {
+    position: absolute;
+    right: 0;
+}
+
+.button-left {
+    position: absolute;
+    left: 0;
 }
