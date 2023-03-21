@@ -207,9 +207,14 @@ function init() {
     controls.autoForward = false;
     controls.dragToLook = true;
 
-    // Adding mouse click
+    // Adding mouse click - for locations
 
     renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, true)
+
+    const divWashington = document.querySelector('#divWashington')
+    const divBeverly = document.querySelector('#divBeverly')
+    const divSanFrancisco = document.querySelector('#divSanFrancisco')
+    const divHangzhou = document.querySelector('#divHangzhou')
 
     function onDocumentMouseDown(event) {
         var mouse = new THREE.Vector2();
@@ -227,12 +232,6 @@ function init() {
         if (intersects.length > 0) {
             var object = intersects[0].object;
 
-            const divWashington = document.querySelector('#divWashington')
-            const divBeverly = document.querySelector('#divBeverly')
-            const divSanFrancisco = document.querySelector('#divSanFrancisco')
-            const divHangzhou = document.querySelector('#divHangzhou')
-
-            
             switch(object)
             {
 
@@ -253,6 +252,7 @@ function init() {
                     divHangzhou.style.display = 'none'; 
                     divSanFrancisco.style.display = 'none';
                     console.log('Beverly Hills was clicked'); 
+                    controls.dispose();
                     break
                 case sanFrancisco:
                     // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
@@ -261,6 +261,7 @@ function init() {
                     divBeverly.style.display = 'none'; 
                     divWashington.style.display = 'none'; 
                     console.log('San Francisco was clicked'); 
+                    controls.dispose();
                     break
                 case hangzhou:
                     // This line sets the display to block if it is not already set to block and to none if it is set to block (see ternary operators)
@@ -269,13 +270,68 @@ function init() {
                     divBeverly.style.display = 'none'; 
                     divWashington.style.display = 'none'; 
                     console.log('Hangzhou was clicked'); 
+                    controls.dispose();
                     break
                 
             
             }
         }
     }
+
+    // Button clicks
+
+    const close_washington = document.querySelector('#washington_close');
+    const close_beverly = document.querySelector('#beverly_close');
+    const close_sanfrancisco = document.querySelector('#sanfrancisco_close');
+    const close_hangzhou = document.querySelector('#hangzhou_close');
     
+    close_washington.addEventListener("click", function() {
+        divWashington.style.display = 'none';
+
+        controls = new FlyControls( camera, renderer.domElement );
+
+        controls.movementSpeed = 1000;
+        controls.domElement = renderer.domElement;
+        controls.rollSpeed = Math.PI / 12;
+        controls.autoForward = false;
+        controls.dragToLook = true;
+    })
+
+    close_beverly.addEventListener("click", function() {
+        divBeverly.style.display = 'none';
+
+        controls = new FlyControls( camera, renderer.domElement );
+
+        controls.movementSpeed = 1000;
+        controls.domElement = renderer.domElement;
+        controls.rollSpeed = Math.PI / 12;
+        controls.autoForward = false;
+        controls.dragToLook = true;
+    })
+
+    close_sanfrancisco.addEventListener("click", function() {
+        divSanFrancisco.style.display = 'none';
+
+        controls = new FlyControls( camera, renderer.domElement );
+
+        controls.movementSpeed = 1000;
+        controls.domElement = renderer.domElement;
+        controls.rollSpeed = Math.PI / 12;
+        controls.autoForward = false;
+        controls.dragToLook = true;
+    })
+
+    close_hangzhou.addEventListener("click", function() {
+        divHangzhou.style.display = 'none';
+
+        controls = new FlyControls( camera, renderer.domElement );
+
+        controls.movementSpeed = 1000;
+        controls.domElement = renderer.domElement;
+        controls.rollSpeed = Math.PI / 12;
+        controls.autoForward = false;
+        controls.dragToLook = true;
+    })
     //
 
     stats = new Stats();
