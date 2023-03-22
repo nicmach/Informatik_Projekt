@@ -61,7 +61,33 @@ body
                  1px 25px 50px rgba(255, 255, 255,0.2);
     text-align: center;
     padding-top: 15px;
+    padding-bottom: 25px;
 
+}
+
+.subheader {
+    font-size: 20px;
+    font-weight: 600;
+    font-family: 'Roboto', sans-serif;
+    /**background-image: linear-gradient(to left, #553c9a, #b393d3);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;**/
+    color: #b393d3;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 0px #957dad,
+                 1px 1.5px 0px #957dad,
+                 1px 2px 0px #957dad,
+                 1px 2.5px 0px #957dad,
+                 1px 3px 0px #957dad,
+                 1px 3.5px 0px #957dad,
+                 1px 10px 5px rgba(255, 255, 255, 0.5),
+                 1px 15px 10px rgba(255, 255, 255,0.4),
+                 1px 20px 30px rgba(255, 255, 255,0.3),
+                 1px 25px 50px rgba(255, 255, 255,0.2);
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 25px;
 }
 
 pre code {
@@ -72,7 +98,8 @@ pre code {
     width: 85%;
     margin-left: auto;
     margin-right: auto;
-    white-space: pre-line;
+    overflow: scroll;
+    /*white-space: pre-line;*/
 }
 
 .button_close {

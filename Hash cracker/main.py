@@ -15,7 +15,7 @@ def crack_hash(hash):
 
     try:
         with open('passwords.txt','r') as password_file:
-            password_list = str(password_file.read()) # str(urlopen('https://raw.githubusercontent.com/danielmiessler/SecLists/master/Passwords/Common-Credentials/10-million-password-list-top-1000000.txt').read(), 'utf-8')
+            password_list = str(password_file.read())
         for password in password_list.split('\n'):
             guess = hashlib.sha256(bytes(password,'utf-8')).hexdigest()
             if guess == hash:

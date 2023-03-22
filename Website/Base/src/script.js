@@ -378,9 +378,13 @@ function render() {
     // rotate the planet and clouds
 
     const delta = clock.getDelta();
+    const elapsedTime = clock.getElapsedTime()
 
     meshPlanet.rotation.y += rotationSpeed * delta;
     meshClouds.rotation.y += 1.25 * rotationSpeed * delta;
+
+    meshMoon.position.x = Math.cos(elapsedTime * 0.05) * 38440;
+	meshMoon.position.z = Math.sin(elapsedTime * 0.05) * 38440 - 1;
 
     // slow down as we approach the surface
 
